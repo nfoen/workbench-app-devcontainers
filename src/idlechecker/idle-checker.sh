@@ -35,8 +35,10 @@ readonly -f set_guest_attributes
 
 function create_tag() {
   emit "Creating tag vwbapp:cpu-utilization/last-active"
+  local imds_token
   local id
-  id="$(wget -q -O - http://169.254.169.254/latest/meta-data/instance-id)"
+  imds_token=$(wget --method=PUT --header 'X-aws-ec2-metadata-token-ttl-seconds:600' -q -O - http://169.254.169.254/latest/api/token)
+  id=$(wget --header "X-aws-ec2-metadata-token: $IMDS_TOKEN" -q -O - http://169.254.169.254/latest/meta-data/instance-id)
   aws ec2 create-tags \
     --resources "${id}" \
     --tags Key=vwbapp:${LAST_ACTIVE_KEY},Value="$1"
