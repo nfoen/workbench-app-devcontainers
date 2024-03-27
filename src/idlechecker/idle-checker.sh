@@ -38,7 +38,7 @@ function create_tag() {
   local imds_token
   local id
   imds_token=$(wget --method=PUT --header 'X-aws-ec2-metadata-token-ttl-seconds:600' -q -O - http://169.254.169.254/latest/api/token)
-  id=$(wget --header "X-aws-ec2-metadata-token: $IMDS_TOKEN" -q -O - http://169.254.169.254/latest/meta-data/instance-id)
+  id=$(wget --header "X-aws-ec2-metadata-token: $imds_token" -q -O - http://169.254.169.254/latest/meta-data/instance-id)
   aws ec2 create-tags \
     --resources "${id}" \
     --tags Key=vwbapp:${LAST_ACTIVE_KEY},Value="$1"
